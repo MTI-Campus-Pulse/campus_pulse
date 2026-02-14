@@ -1,8 +1,8 @@
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker, declarative_base
-import os
-from dotenv import load_dotenv
-load_dotenv()  # يحمل .env
+# from sqlalchemy import create_engine
+# from sqlalchemy.orm import sessionmaker, declarative_base
+# import os
+# from dotenv import load_dotenv
+# load_dotenv()  # يحمل .env
 
 # DATABASE_URL = os.getenv("DATABASE_URL")  # اللينك من .env
 
@@ -18,12 +18,11 @@ load_dotenv()  # يحمل .env
 #     finally:
 #         db.close()
 
-# from typing import Dict, List
-# from datetime import datetime
 
 
 
-
+from typing import Dict, List
+from datetime import datetime
 # Fake Database (In-Memory)
 fake_db: Dict[str, dict] = {
     "student@stu.mti.edu": {
