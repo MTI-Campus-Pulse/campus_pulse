@@ -1,9 +1,9 @@
-from routes.query_router import router as query_router
 from fastapi import FastAPI
+from routes.query_router import router as query_router
+from app.routes import router as approval_router
 
-app = FastAPI()
+
+app = FastAPI(title="Campus Pulse")
+
 app.include_router(query_router)
-
-@app.get("/")
-def read_root():
-    return {"message": "Campus Pulse Backend is running!"}  # اختبار بسيط
+app.include_router(approval_router)
