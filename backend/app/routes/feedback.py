@@ -1,40 +1,52 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends, HTTPException
+from sqlalchemy.orm import Session
 from pydantic import BaseModel
-from ..database import feedback_db, posts_db
+from typing import Optional, List
+from datetime import datetime
+
+# استيرادات مهمة
+from backend.app.db.database import get_db
+from backend.app.models.feedback import Feedback   # تأكدي من المسار الصح
+# لو عندك مودل للـ News/Post، استورديه هنا إذا كنتِ عايزة تتحققي من وجود news_id
+# from backend.app.models.news import News
 
 router = APIRouter(prefix="/api/feedback", tags=["Feedback"])
 
 class FeedbackCreate(BaseModel):
-    user_email: str
-    post_id: int
-    reaction: str = None
-    comment: str = None
+    user_id: int                # غيرناه من user_email لـ user_id (أفضل مع foreign key)
+    newsletter_id: int                # مطابق لـ news_id في المودل
+    reaction: Optional[int] = None   # بدل reaction (يمكن تكون 1-5 أو emoji code)
+    comment: Optional[str] = None
 
-@router.post("/")
-def add_feedback_api(feedback: FeedbackCreate):
-    if not any(post["id"] == feedback.post_id for post in posts_db):
-        return {"error": "Post not found"}, 404
-    
-    feedback_entry = {
-        "user_email": feedback.user_email,
-        "post_id": feedback.post_id,
-        "reaction": feedback.reaction,
-        "comment": feedback.comment,
-        "timestamp": __import__('datetime').datetime.now().isoformat()
-    }
-    
-    feedback_db.append(feedback_entry)
-    
-    return {
-        "success": True,
-        "message": "تم حفظ التعليق بنجاح",
-        "feedback_id": len(feedback_db)
-    }
+class FeedbackResponse(BaseModel):
+    feedback_id: int
+    comment: Optional[str]
+    reaction: Optional[int]
+    created_at: str
+    newsletter_id: int
+    user_id: int
 
-@router.get("/")
-def get_all_feedback_api():
-    return {
-        "success": True,
-        "feedback": feedback_db,
-        "count": len(feedback_db)
-    }
+@router.post("/", response_model=FeedbackResponse)
+def create_feedback(
+    feedback: FeedbackCreate,
+    db: Session = Depends(get_db)
+):
+    # اختياري: تحقق إن الـ news_id موجود (لو عندك جدول news/posts)
+    # news = db.query(News).filter(News.id == feedback.news_id).first()
+    # if not news:
+    #     raise HTTPException(status_code=404, detail="News/Post not found")
+
+    # إنشاء سجل جديد
+    db_feedback = Feedback(
+        comment=feedback.comment,
+        reaction=feedback.reaction,  # غيرناه من rating لـ reaction في المودل
+        newsletter_id=feedback.newsletter_id,
+        user_id=feedback.user_id,
+        created_at=datetime.utcnow()
+    )
+
+    db.add(db_feedback)
+    db.commit()
+    db.refresh(db_feedback)
+
+    return db_feedback.to_dict()  # بيستخدم الدالة اللي موجودة عندك

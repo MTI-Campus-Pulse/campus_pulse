@@ -1,12 +1,12 @@
-from pydantic import BaseModel, EmailStr
-from typing import List, Optional, Dict
+from typing import List, Optional, Dict, Any
 
-class UserLogin(BaseModel):
-    email: EmailStr
-    password: str
+from realtime import BaseModel
+
+# أو أفضل: عرّف نموذجًا فرعيًا
+class InterestItem(BaseModel):
+    name: str
 
 class UserRegister(BaseModel):
-    email: EmailStr
+    email: str
     password: str
-    confirm_password: str
-    interests: Optional[List[Dict[str, str]]] = None
+    interests: Optional[List[InterestItem]] = None

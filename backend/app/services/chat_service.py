@@ -1,4 +1,4 @@
-from ..database import faq_data
+from ..db.database import faq_data
 from typing import Dict
 
 def get_chat_response(question: str) -> Dict[str, str]:
