@@ -1,11 +1,33 @@
 from fastapi import FastAPI
+from app.core.config import settings
+from app.routes import article_route , newsletter_route
+# from fastapi.middleware.cors import CORSMiddleware
+
+app = FastAPI(title="University Newsletter System")
+
+# قائمة بالعناوين المسموح لها تكلم الباك إند
+# origins = ["*"]
+# app.add_middleware(
+#     CORSMiddleware,
+#     allow_origins=origins,
+#     allow_credentials=True,
+#     allow_methods=["*"], # السماح بكل أنواع الطلبات (GET, POST, etc.)
+#     allow_headers=["*"], # السماح بكل الـ Headers
+# )
+
+# تضمين الروت الجديد الخاص بالمقالات
+app.include_router(article_route.router)
+app.include_router(newsletter_route.router)
+
+@app.get("/")
+def read_root():
+    return {"message": "Welcome to University Newsletter API - Articles System"}
+
+
+
 from fastapi.middleware.cors import CORSMiddleware
 from backend.app.routes import auth, posts, feedback, chat, reports
 from fastapi import FastAPI
-from backend.app.db.database import get_db
-from backend.app.services.user_service import authenticate_user, register_user
-from backend.app.services.campus_pipeline import process_text
-from pydantic import BaseModel
 from supabase import create_client, Client
 import matplotlib.pyplot as plt
 from datetime import datetime
@@ -16,14 +38,7 @@ import os
 from backend.app.ai_modules import CampusPulsePipeline
 import json
 
-app = FastAPI(title="CampusPulse Backend API")
-# 2. تحميل المتغيرات فوراً في بداية تشغيل التطبيق
-# هذا السطر يضمن أن المتغيرات متاحة لكل الملفات المستوردة بعده
 load_dotenv() 
-# 3. إعدادات Supabase
-SB_URL = "https://imlydashdkziznmjhfgy.supabase.co"
-SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImltbHlkYXNoZGt6aXpubWpoZmd5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAyOTI2MDEsImV4cCI6MjA4NTg2ODYwMX0.MR0PyzmIwXlz06HOhyZt9dYypL9BV4YboVqbpuEAF-8"
-supabase: Client = create_client(SB_URL, SB_KEY)
 
 # import google.generativeai as genai
 
