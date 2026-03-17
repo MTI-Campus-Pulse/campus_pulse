@@ -50,7 +50,7 @@ export default function AboutUsPage() {
   ]
 
   return (
-    <div className="relative min-h-screen bg-gradient-to-b from-slate-50 via-white to-slate-100 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950">
+    <div className="relative min-h-screen bg-[#f8f5f0] dark:from-slate-950 dark:via-slate-900 dark:to-slate-950">
       {/* Subtle background decoration */}
       <div className="absolute inset-0 z-0 opacity-20 pointer-events-none overflow-hidden">
         <div className="absolute -top-20 -left-20 w-[500px] h-[500px] bg-indigo-400/10 rounded-full blur-3xl" />

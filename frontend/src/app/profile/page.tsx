@@ -4,17 +4,23 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Pencil, Save, Mail, Lock, Phone, GraduationCap, Newspaper, User, LogOut, ArrowLeft } from "lucide-react"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Badge } from "@/components/ui/badge"
+import { 
+  Pencil, Save, X, Mail, Lock, Phone, GraduationCap, Newspaper, 
+  User, LogOut, ArrowLeft, Camera 
+} from "lucide-react"
 import Link from 'next/link'
 
-// Category labels
-const categoryLabels: Record<string, string> = {
-  events: "Campus Events",
-  sports: "Sports",
-  tech: "Technology",
-  research: "Research",
-  announcements: "Announcements",
-  clubs: "Student Clubs",
+// Category labels + optional colors
+const categoryStyles: Record<string, { label: string; color: string }> = {
+  events:       { label: "Campus Events",       color: "bg-rose-100 text-rose-800 dark:bg-rose-950 dark:text-rose-300" },
+  sports:       { label: "Sports",              color: "bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300" },
+  tech:         { label: "Technology",          color: "bg-blue-100 text-blue-800 dark:bg-blue-950 dark:text-blue-300" },
+  research:     { label: "Research",            color: "bg-purple-100 text-purple-800 dark:bg-purple-950 dark:text-purple-300" },
+  announcements:{ label: "Announcements",       color: "bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300" },
+  clubs:        { label: "Student Clubs",       color: "bg-indigo-100 text-indigo-800 dark:bg-indigo-950 dark:text-indigo-300" },
 }
 
 export default function ProfilePage() {
@@ -49,13 +55,13 @@ export default function ProfilePage() {
           setUserMajor(majorMap[parsed.major] || parsed.major)
         }
         setIsGuest(false)
-      } catch (err) {}
+      } catch {}
     }
 
     if (savedInterests) {
       try {
         setInterests(JSON.parse(savedInterests))
-      } catch (err) {}
+      } catch {}
     }
 
     setLoading(false)
@@ -64,6 +70,7 @@ export default function ProfilePage() {
   const handleSavePhone = () => {
     setPhone(tempPhone)
     setIsEditingPhone(false)
+    // TODO: persist to backend / localStorage
   }
 
   const handleCancelPhone = () => {
@@ -73,182 +80,189 @@ export default function ProfilePage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#f8f5f0] flex items-center justify-center">
-        <div className="animate-spin h-12 w-12 border-4 border-zinc-900 border-t-transparent rounded-full"></div>
+      <div className="min-h-screen flex items-center justify-center bg-linear-to-b from-slate-50 to-white dark:from-slate-950 dark:to-slate-900">
+        <div className="animate-spin h-12 w-12 border-4 border-primary border-t-transparent rounded-full" />
       </div>
     )
   }
 
-  if (isGuest) {
-    return (
-      <div className="min-h-screen bg-[#f8f5f0] dark:bg-slate-950 flex items-center justify-center px-6 py-16">
-        <div className="max-w-lg text-center space-y-8">
-          <User className="h-20 w-20 mx-auto text-zinc-400" />
-          <h1 className="text-4xl font-bold tracking-tight">Sign in to view your profile</h1>
-          <p className="text-lg text-zinc-600 dark:text-zinc-400">Personalize your experience, save preferences, and get tailored campus news.</p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button size="lg" asChild><Link href="/auth/register">Create Account</Link></Button>
-            <Button variant="outline" size="lg" asChild><Link href="/auth/login">Login</Link></Button>
-          </div>
-        </div>
-      </div>
-    )
-  }
+  
 
   return (
-    <div className="min-h-screen bg-[#f8f5f0] dark:bg-slate-950 pb-20 mt-15">
-
-     
-
-      <div className="max-w-5xl mx-auto px-6 pt-12">
-        {/* Hero Profile Section */}
-        <div className="flex flex-col items-center text-center mb-16">
-          <div className="relative mb-6">
-            <div className="w-40 h-40 rounded-3xl overflow-hidden border-8 border-white shadow-2xl">
-              <img
-                src="/profile-placeholder.png"
-                alt="Profile"
-                className="w-full h-full object-cover"
-              />
-            </div>
-            <button className="absolute bottom-3 right-3 bg-white p-3 rounded-2xl shadow-lg hover:scale-110 transition-all">
-              <Pencil size={20} className="text-zinc-700" />
-            </button>
-          </div>
-
-          <h1 className="text-5xl font-bold tracking-tight text-black dark:text-white">{userName}</h1>
-          <div className="flex items-center gap-2 mt-3 text-xl text-zinc-600 dark:text-zinc-400">
-            <GraduationCap className="h-6 w-6" />
-            {userMajor ? `${userMajor} Student` : "Student"}
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-          {/* Left Column - Personal Info */}
-          <div className="lg:col-span-7 space-y-8">
-            {/* Email */}
-            <div className="bg-white dark:bg-slate-900 rounded-3xl p-8 border border-zinc-200 dark:border-zinc-800">
-              <div className="flex items-center gap-4 mb-6">
-                <div className="w-12 h-12 bg-indigo-100 dark:bg-indigo-950 rounded-2xl flex items-center justify-center">
-                  <Mail className="h-6 w-6 text-indigo-600" />
-                </div>
-                <div>
-                  <p className="text-sm text-zinc-500">Email Address</p>
-                  <p className="text-2xl font-medium">loayyasser@gmail.com</p>
-                </div>
-              </div>
-            </div>
-
-            {/* Phone */}
-            <div className="bg-white dark:bg-slate-900 rounded-3xl p-8 border border-zinc-200 dark:border-zinc-800">
-              <div className="flex items-center gap-4 mb-6">
-                <div className="w-12 h-12 bg-emerald-100 dark:bg-emerald-950 rounded-2xl flex items-center justify-center">
-                  <Phone className="h-6 w-6 text-emerald-600" />
-                </div>
-                <div>
-                  <p className="text-sm text-zinc-500">Phone Number</p>
-                </div>
-              </div>
-
-              {isEditingPhone ? (
-                <div className="flex gap-3">
-                  <Input
-                    value={tempPhone}
-                    onChange={(e) => setTempPhone(e.target.value)}
-                    className="text-2xl"
-                  />
-                  <Button onClick={handleSavePhone} className="px-8">Save</Button>
-                  <Button variant="outline" onClick={handleCancelPhone}>Cancel</Button>
-                </div>
-              ) : (
-                <div className="flex items-center justify-between">
-                  <p className="text-3xl font-medium tracking-tight">{phone}</p>
-                  <Button variant="outline" onClick={() => setIsEditingPhone(true)}>
-                    <Pencil className="mr-2 h-4 w-4" /> Edit
-                  </Button>
-                </div>
-              )}
-            </div>
-
-            {/* Password */}
-            <div className="bg-white dark:bg-slate-900 rounded-3xl p-8 border border-zinc-200 dark:border-zinc-800">
-              <div className="flex items-center gap-4 mb-6">
-                <div className="w-12 h-12 bg-rose-100 dark:bg-rose-950 rounded-2xl flex items-center justify-center">
-                  <Lock className="h-6 w-6 text-rose-600" />
-                </div>
-                <div>
-                  <p className="text-sm text-zinc-500">Password</p>
-                  <p className="text-3xl tracking-widest">••••••••••••</p>
-                </div>
-              </div>
-              <Button variant="outline" className="w-full">Change Password</Button>
-            </div>
-          </div>
-
-          {/* Right Column - Major + Interests */}
-          <div className="lg:col-span-5 space-y-8">
-            {/* Major */}
-            <div className="bg-white dark:bg-slate-900 rounded-3xl p-8 border border-zinc-200 dark:border-zinc-800 h-fit">
-              <div className="flex items-center gap-4 mb-6">
-                <div className="w-12 h-12 bg-amber-100 dark:bg-amber-950 rounded-2xl flex items-center justify-center">
-                  <GraduationCap className="h-6 w-6 text-amber-600" />
-                </div>
-                <div>
-                  <p className="text-sm text-zinc-500">Major / Faculty</p>
-                  <p className="text-3xl font-medium">{userMajor || "Computer Science"}</p>
-                </div>
-              </div>
-            </div>
-
-            {/* News Preferences */}
-            <div className="bg-white dark:bg-slate-900 rounded-3xl p-8 border border-zinc-200 dark:border-zinc-800">
-              <div className="flex items-center justify-between mb-8">
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 bg-purple-100 dark:bg-purple-950 rounded-2xl flex items-center justify-center">
-                    <Newspaper className="h-6 w-6 text-purple-600" />
-                  </div>
-                  <div>
-                    <p className="text-sm text-zinc-500">News Preferences</p>
-                    <p className="font-semibold text-xl">What I follow</p>
-                  </div>
-                </div>
-                <Button
-                  variant="outline"
-                  onClick={() => router.push('/auth/register')}
+    <div className="min-h-screen bg-[#f8f5f0] dark:from-slate-950 dark:to-slate-900 pb-20">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 lg:pt-16">
+        {/* Profile Header */}
+        <Card className="overflow-hidden border-none shadow-xl mb-10">
+          <div className="h-32 sm:h-48 bg-linear-to-r from-indigo-500 via-purple-500 to-pink-500" />
+          <CardContent className="relative px-6 pb-10 pt-0 sm:pt-4 -mt-16 sm:-mt-20">
+            <div className="flex flex-col sm:flex-row items-center sm:items-end gap-6">
+              <div className="relative">
+                <Avatar className="h-32 w-32 sm:h-40 sm:w-40 border-8 border-background shadow-2xl">
+                  <AvatarImage src="/profile-placeholder.png" alt={userName} />
+                  <AvatarFallback className="text-4xl bg-linear-to-br from-indigo-400 to-purple-500 text-white">
+                    {userName.slice(0,2).toUpperCase()}
+                  </AvatarFallback>
+                </Avatar>
+                <Button 
+                  size="icon" 
+                  variant="secondary" 
+                  className="absolute bottom-2 right-2 rounded-full shadow-md"
                 >
-                  Edit
+                  <Camera className="h-4 w-4" />
                 </Button>
               </div>
 
-              {interests.length === 0 ? (
-                <p className="text-zinc-500 italic">No interests selected yet</p>
-              ) : (
-                <div className="flex flex-wrap gap-3">
-                  {interests.map((slug) => (
-                    <div
-                      key={slug}
-                      className="px-5 py-3 bg-zinc-100 dark:bg-zinc-800 text-sm font-medium rounded-2xl"
-                    >
-                      {categoryLabels[slug] || slug}
-                    </div>
-                  ))}
+              <div className="text-center sm:text-left space-y-2 flex-1">
+                <h1 className="text-4xl sm:text-5xl font-bold tracking-tight">{userName}</h1>
+                <div className="flex items-center justify-center sm:justify-start gap-3 text-xl text-muted-foreground">
+                  <GraduationCap className="h-6 w-6" />
+                  <span>{userMajor ? `${userMajor} Student` : "Student"}</span>
                 </div>
-              )}
-            </div>
+              </div>
 
-            {/* Logout */}
-            <Button
-              variant="outline"
-              size="lg"
-              className="w-full border-red-200 text-red-600 hover:bg-red-50 dark:border-red-900 dark:hover:bg-red-950"
-              onClick={() => {
-                localStorage.clear()
-                router.push('/')
-              }}
-            >
-              <LogOut className="mr-3 h-5 w-5" />
-              Log Out
-            </Button>
+              <div className="flex gap-3 mt-4 sm:mt-0">
+                <Button variant="outline" size="icon" asChild>
+                  <Link href="/">
+                    <ArrowLeft className="h-5 w-5" />
+                  </Link>
+                </Button>
+                <Button 
+                  variant="destructive" 
+                  size="lg"
+                  onClick={() => {
+                    localStorage.clear()
+                    router.push('/')
+                  }}
+                >
+                  <LogOut className="mr-2 h-5 w-5" />
+                  Log Out
+                </Button>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Left - Main Info */}
+          <div className="lg:col-span-2 space-y-6">
+            {/* Email */}
+            <Card>
+              <CardHeader className="flex flex-row items-center gap-4 pb-2">
+                <div className="w-12 h-12 rounded-xl bg-indigo-100 dark:bg-indigo-950 flex items-center justify-center">
+                  <Mail className="h-6 w-6 text-indigo-600 dark:text-indigo-400" />
+                </div>
+                <CardTitle className="text-xl">Email Address</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-2xl font-medium">loayyasser@gmail.com</p>
+              </CardContent>
+            </Card>
+
+            {/* Phone */}
+            <Card>
+              <CardHeader className="flex flex-row items-center gap-4 pb-2">
+                <div className="w-12 h-12 rounded-xl bg-emerald-100 dark:bg-emerald-950 flex items-center justify-center">
+                  <Phone className="h-6 w-6 text-emerald-600 dark:text-emerald-400" />
+                </div>
+                <CardTitle className="text-xl">Phone Number</CardTitle>
+              </CardHeader>
+              <CardContent>
+                {isEditingPhone ? (
+                  <div className="flex flex-col sm:flex-row gap-3">
+                    <Input
+                      value={tempPhone}
+                      onChange={(e) => setTempPhone(e.target.value)}
+                      className="text-xl"
+                      autoFocus
+                    />
+                    <div className="flex gap-2">
+                      <Button onClick={handleSavePhone}>
+                        <Save className="mr-2 h-4 w-4" /> Save
+                      </Button>
+                      <Button variant="outline" onClick={handleCancelPhone}>
+                        <X className="mr-2 h-4 w-4" /> Cancel
+                      </Button>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="flex items-center justify-between">
+                    <p className="text-3xl font-medium tracking-tight">{phone}</p>
+                    <Button variant="ghost" size="icon" onClick={() => setIsEditingPhone(true)}>
+                      <Pencil className="h-5 w-5" />
+                    </Button>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+
+            {/* Password */}
+            <Card>
+              <CardHeader className="flex flex-row items-center gap-4 pb-2">
+                <div className="w-12 h-12 rounded-xl bg-rose-100 dark:bg-rose-950 flex items-center justify-center">
+                  <Lock className="h-6 w-6 text-rose-600 dark:text-rose-400" />
+                </div>
+                <CardTitle className="text-xl">Password</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-3xl tracking-widest text-muted-foreground mb-4">••••••••••••</p>
+                <Button variant="outline" className="w-full sm:w-auto">
+                  Change Password
+                </Button>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Right - Sidebar */}
+          <div className="space-y-6">
+            {/* Major */}
+            <Card>
+              <CardHeader className="flex flex-row items-center gap-4 pb-2">
+                <div className="w-12 h-12 rounded-xl bg-amber-100 dark:bg-amber-950 flex items-center justify-center">
+                  <GraduationCap className="h-6 w-6 text-amber-600 dark:text-amber-400" />
+                </div>
+                <CardTitle className="text-xl">Major / Faculty</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-3xl font-medium">{userMajor || "Not set"}</p>
+              </CardContent>
+            </Card>
+
+            {/* Interests */}
+            <Card className="h-max flex flex-col">
+              <CardHeader className="flex flex-row items-center justify-between pb-2">
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 rounded-xl bg-purple-100 dark:bg-purple-950 flex items-center justify-center">
+                    <Newspaper className="h-6 w-6 text-purple-600 dark:text-purple-400" />
+                  </div>
+                  <CardTitle className="text-xl">News Preferences</CardTitle>
+                </div>
+                <Button variant="outline" size="sm" onClick={() => router.push('/preferences')}>
+                  Edit
+                </Button>
+              </CardHeader>
+              <CardContent className="flex-1">
+                {interests.length === 0 ? (
+                  <p className="text-muted-foreground italic py-6">
+                    No interests selected yet — add some to personalize your feed!
+                  </p>
+                ) : (
+                  <div className="flex flex-wrap gap-3 pt-2">
+                    {interests.map((slug) => {
+                      const style = categoryStyles[slug] || { label: slug, color: "bg-muted text-muted-foreground" }
+                      return (
+                        <Badge 
+                          key={slug} 
+                          variant="secondary"
+                          className={`px-4 py-2 text-sm font-medium rounded-xl ${style.color}`}
+                        >
+                          {style.label}
+                        </Badge>
+                      )
+                    })}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
           </div>
         </div>
       </div>

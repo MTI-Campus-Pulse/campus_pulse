@@ -15,14 +15,7 @@ import { Input } from '@/components/ui/input'
 import React from 'react'
 import { useForm } from 'react-hook-form'
 import { registerschema, registerschemaform } from '@/schema/register.schema'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
-import { Sparkles, Check, User, Phone, IdCard, Calendar, Mail, Lock, GraduationCap } from "lucide-react"
+import { Sparkles, Check, User, Phone, Calendar, Mail, Lock } from "lucide-react"
 
 export default function Register() {
   const router = useRouter()
@@ -33,7 +26,7 @@ export default function Register() {
     { id: "sports", label: "Sports" },
     { id: "tech", label: "Technology" },
     { id: "research", label: "Research" },
-    { id: "announcements", label: "Announce ments" },
+    { id: "announcements", label: "Announcements" },
     { id: "clubs", label: "Student Clubs" },
   ]
 
@@ -44,12 +37,11 @@ export default function Register() {
     defaultValues: {
       name: "",
       phone: "",
-      studentId: "",
       date: "",
       email: "",
       password: "",
       repassword: "",
-      major: "",
+      
       interests: [],
     },
   })
@@ -71,12 +63,10 @@ export default function Register() {
     const isValid = await form.trigger([
       "name",
       "phone",
-      "studentId",
       "date",
       "email",
       "password",
       "repassword",
-      "major",
     ])
     if (isValid) setStep(2)
   }
@@ -87,7 +77,7 @@ export default function Register() {
     localStorage.setItem('userNewsPreferences', JSON.stringify(data.interests || []))
     localStorage.setItem('userProfile', JSON.stringify({
       name: data.name.trim(),
-      major: data.major,
+      // major: data.major || "Not specified",
     }))
 
     router.push('/auth/login')
@@ -95,7 +85,6 @@ export default function Register() {
 
   return (
     <div className="min-h-screen bg-[#f8f5f0] dark:bg-slate-950 font-serif">
-
       {/* Modern Minimal Header */}
       <div className="bg-white dark:bg-slate-900 border-b border-zinc-200 dark:border-zinc-800 sticky top-0 z-50">
         <div className="max-w-3xl mx-auto px-6 py-6 flex items-center justify-between">
@@ -109,17 +98,16 @@ export default function Register() {
         <div className="max-w-3xl mx-auto px-6 pb-6">
           <div className="h-1 bg-zinc-200 dark:bg-zinc-800 rounded-full overflow-hidden">
             <div
-              className="h-1 bg-linear-to-r from-indigo-600 to-violet-600 transition-all duration-500"
+              className="h-full bg-gradient-to-r from-indigo-600 to-violet-600 transition-all duration-500"
               style={{ width: step === 1 ? '50%' : '100%' }}
             />
           </div>
         </div>
       </div>
 
-      <div className="max-w-3xl mx-auto px-6 pt-12 pb-20">
+      <div className="max-w-5xl mx-auto px-6 pt-12 pb-20">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onsubmit)}>
-
             {/* ======================== STEP 1 ======================== */}
             {step === 1 && (
               <div className="bg-white dark:bg-slate-900 rounded-3xl shadow-xl border border-zinc-200 dark:border-zinc-800 p-10 md:p-14">
@@ -127,128 +115,120 @@ export default function Register() {
                   <div className="mx-auto w-16 h-16 bg-gradient-to-br from-indigo-500 to-violet-600 rounded-2xl flex items-center justify-center mb-6">
                     <User className="h-8 w-8 text-white" />
                   </div>
-                  <h2 className="text-4xl font-bold tracking-tight text-black dark:text-white">Create your account</h2>
-                  
+                  <h2 className="text-4xl font-bold tracking-tight text-black dark:text-white">
+                    Create your account
+                  </h2>
                 </div>
 
                 <div className="space-y-8">
-                  <FormField name='name' control={form.control} render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="flex font-extrabold items-center gap-3 text-base">
-                        <User className="h-4 w-4 font-bolder text-zinc-500" /> Full Name
-                      </FormLabel>
-                      <FormControl>
-                        <Input placeholder="Ahmed Mohamed" className="h-14 text-base" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )} />
+                  {/* Full Name - full width */}
+                  <FormField
+                    name="name"
+                    control={form.control}
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="flex font-extrabold items-center gap-3 text-base">
+                          <User className="h-4 w-4 text-zinc-500" /> Full Name
+                        </FormLabel>
+                        <FormControl>
+                          <Input placeholder="Ahmed Mohamed" className="h-14 text-base" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
 
+                  {/* Phone + Date of Birth */}
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <FormField name='phone' control={form.control} render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="flex font-extrabold  items-center gap-3 text-base">
-                          <Phone className="h-4 w-4 text-zinc-500" /> Phone Number
-                        </FormLabel>
-                        <FormControl>
-                          <Input type='tel' placeholder="+20 1XX XXX XXXX" className="h-14 text-base" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )} />
+                    <FormField
+                      name="phone"
+                      control={form.control}
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="flex font-extrabold items-center gap-3 text-base">
+                            <Phone className="h-4 w-4 text-zinc-500" /> Phone Number
+                          </FormLabel>
+                          <FormControl>
+                            <Input type="tel" placeholder="+20 1XX XXX XXXX" className="h-14 text-base" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
 
-                    <FormField name="studentId" control={form.control} render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="flex font-extrabold  items-center gap-3 text-base">
-                          <IdCard className="h-4 w-4 text-zinc-500" /> Student ID
-                        </FormLabel>
-                        <FormControl>
-                          <Input placeholder="e.g. 1010504" className="h-14 text-base" {...field} onChange={(e) => field.onChange(e.target.value.trim())} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )} />
+                    <FormField
+                      name="date"
+                      control={form.control}
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="flex font-extrabold items-center gap-3 text-base">
+                            <Calendar className="h-4 w-4 text-zinc-500" /> Date of Birth
+                          </FormLabel>
+                          <FormControl>
+                            <Input type="date" className="h-14 text-base" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <FormField name='date' control={form.control} render={({ field }) => (
+                  {/* Email - full width */}
+                  <FormField
+                    name="email"
+                    control={form.control}
+                    render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="flex font-extrabold  items-center gap-3 text-base">
-                          <Calendar className="h-4 w-4 text-zinc-500" /> Date of Birth
-                        </FormLabel>
-                        <FormControl>
-                          <Input type='date' className="h-14 text-base" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )} />
-
-                    <FormField name='email' control={form.control} render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="flex font-extrabold  items-center gap-3 text-base">
+                        <FormLabel className="flex font-extrabold items-center gap-3 text-base">
                           <Mail className="h-4 w-4 text-zinc-500" /> Email Address
                         </FormLabel>
                         <FormControl>
-                          <Input type='email' placeholder="loay.101060@cs.mti.edu.eg" className="h-14 text-base" {...field} />
+                          <Input type="email" placeholder="loay.101060@cs.mti.edu.eg" className="h-14 text-base" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
-                    )} />
-                  </div>
+                    )}
+                  />
 
+                  {/* Password + Confirm Password */}
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <FormField name='password' control={form.control} render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="flex font-extrabold  items-center gap-3 text-base">
-                          <Lock className="h-4 w-4 text-zinc-500" /> Password
-                        </FormLabel>
-                        <FormControl>
-                          <Input type='password' placeholder="At least 8 characters" className="h-14 text-base" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )} />
+                    <FormField
+                      name="password"
+                      control={form.control}
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="flex font-extrabold items-center gap-3 text-base">
+                            <Lock className="h-4 w-4 text-zinc-500" /> Password
+                          </FormLabel>
+                          <FormControl>
+                            <Input type="password" placeholder="At least 8 characters" className="h-14 text-base" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
 
-                    <FormField name='repassword' control={form.control} render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="flex font-extrabold  items-center gap-3 text-base">
-                          <Lock className="h-4 w-4 text-zinc-500" /> Confirm Password
-                        </FormLabel>
-                        <FormControl>
-                          <Input type='password' placeholder="Confirm password" className="h-14 text-base" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )} />
+                    <FormField
+                      name="repassword"
+                      control={form.control}
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="flex font-extrabold items-center gap-3 text-base">
+                            <Lock className="h-4 w-4 text-zinc-500" /> Confirm Password
+                          </FormLabel>
+                          <FormControl>
+                            <Input type="password" placeholder="Confirm password" className="h-14 text-base" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
                   </div>
-
-                  <FormField name="major" control={form.control} render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="flex font-extrabold  items-center gap-3 text-base">
-                        <GraduationCap className="h-4 w-4 text-zinc-500" /> Major / Faculty
-                      </FormLabel>
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
-                        <FormControl>
-                          <SelectTrigger className="h-14 text-base">
-                            <SelectValue placeholder="Select your major" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          <SelectItem value="computer_science">Computer Science</SelectItem>
-                          <SelectItem value="information_systems">Information Systems</SelectItem>
-                          <SelectItem value="engineering">Engineering</SelectItem>
-                          <SelectItem value="business">Business</SelectItem>
-                          <SelectItem value="medicine">Medicine</SelectItem>
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )} />
 
                   <Button
                     type="button"
                     onClick={goNext}
-                    className="w-full cursor-pointer h-16 text-lg font-semibold bg-linear-to-r from-indigo-600 to-violet-600 hover:brightness-110 transition-all rounded-2xl shadow-xl shadow-indigo-500/30"
+                    className="w-full cursor-pointer h-16 text-lg font-semibold bg-gradient-to-r from-indigo-600 to-violet-600 hover:brightness-110 transition-all rounded-2xl shadow-xl shadow-indigo-500/30 mt-6"
                   >
                     Continue to Interests →
                   </Button>
@@ -296,7 +276,7 @@ export default function Register() {
                                 key={category.id}
                                 onClick={() => {
                                   if (isSelected) {
-                                    field.onChange(field.value.filter((id: string) => id !== category.id))
+                                    field.onChange(field.value?.filter((id: string) => id !== category.id) || [])
                                   } else {
                                     field.onChange([...(field.value || []), category.id])
                                   }
@@ -350,13 +330,11 @@ export default function Register() {
                     size="lg"
                     className="flex-1 h-16 rounded-2xl bg-gradient-to-r from-indigo-600 via-purple-600 to-violet-600 text-lg font-semibold shadow-xl shadow-indigo-500/30 hover:brightness-110 transition-all flex items-center justify-center gap-3"
                   >
-                    Finish Registration
-                    
+                    Create Account
                   </Button>
                 </div>
               </div>
             )}
-
           </form>
         </Form>
       </div>
