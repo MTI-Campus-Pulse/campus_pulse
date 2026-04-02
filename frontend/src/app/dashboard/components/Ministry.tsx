@@ -26,18 +26,18 @@ type Report = {
 
 // ============================================================
 // 🔧 MOCK DATA (delete this when backend is ready)
-// Simulates the response from GET /supreme-council/reports
+// Simulates the response from GET /reports
 // ============================================================
 const MOCK_REPORT: Report = {
   total_articles_published: 142,
   total_users_registered: 1380,
   newsletter_editions_count: 24,
   most_read_articles: [
-    { article_id: 1, title: "AI Conference at MTI Draws Global Experts",          category: "tech",          views: 4821 },
-    { article_id: 2, title: "MTI Wins Big at Annual Inter-University Sports Day", category: "sports",        views: 3654 },
-    { article_id: 3, title: "New Research Lab Opens in Engineering Building",      category: "research",      views: 2910 },
-    { article_id: 4, title: "Registration for the New Academic Semester is Open", category: "announcements", views: 2540 },
-    { article_id: 5, title: "Annual Fun Day Brings Record Attendance",            category: "events",        views: 2100 },
+    { article_id: 1, title: "AI Conference at MTI Draws Global Experts",           category: "tech",          views: 4821 },
+    { article_id: 2, title: "MTI Wins Big at Annual Inter-University Sports Day",  category: "sports",        views: 3654 },
+    { article_id: 3, title: "New Research Lab Opens in Engineering Building",       category: "research",      views: 2910 },
+    { article_id: 4, title: "Registration for the New Academic Semester is Open",  category: "announcements", views: 2540 },
+    { article_id: 5, title: "Annual Fun Day Brings Record Attendance",             category: "events",        views: 2100 },
   ],
 }
 
@@ -57,6 +57,22 @@ const CATEGORY_COLORS: Record<string, string> = {
   research:      "bg-purple-100 text-purple-700 dark:bg-purple-950 dark:text-purple-300",
   announcements: "bg-amber-100 text-amber-700 dark:bg-amber-950 dark:text-amber-300",
   clubs:         "bg-indigo-100 text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300",
+}
+
+// Role to display title mapping
+// ============================================================
+// 🔧 BACKEND INTEGRATION POINT
+// Make sure the role strings here match exactly what your
+// backend returns in the login response.
+// ============================================================
+const ROLE_TITLES: Record<string, string> = {
+  supreme_council:    "Supreme Council",
+  naqaae:             "NAQAAE",
+  council:            "Council of Private Universities",
+  manager:            "University President",
+  quality_assurance:  "Quality Assurance Unit",
+  supreme_universities: "Supreme Council of Universities",
+  ministry:           "Ministry of Higher Education",
 }
 
 type StatCardProps = {
@@ -84,16 +100,31 @@ function StatCard({ icon, label, value, iconBg }: StatCardProps) {
   )
 }
 
-export default function SupremeCouncilDashboard() {
+// ============================================================
+// This single component is reused for ALL stakeholder roles.
+// The title changes automatically based on the role stored
+// in localStorage after login.
+// ============================================================
+export default function StakeholderDashboard() {
   const [report, setReport] = useState<Report | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
+  // Read role from localStorage to show correct title
+  const storedUser = typeof window !== 'undefined'
+    ? JSON.parse(localStorage.getItem('user') || '{}')
+    : {}
+  const role = storedUser?.role || ''
+  const title = ROLE_TITLES[role] || 'Dashboard'
+
   // ============================================================
   // 🔧 BACKEND INTEGRATION POINT
-  // Fetch the system report for the supreme council.
-  // Confirm endpoint with your backend team:
+  // Fetch the system report.
+  // Confirm endpoint with your backend team: GET /reports
+  // If each role has its own endpoint, adjust accordingly:
   //   GET /supreme-council/reports
+  //   GET /naqaae/reports
+  //   etc.
   // ============================================================
   const fetchReport = async () => {
     setLoading(true)
@@ -106,7 +137,7 @@ export default function SupremeCouncilDashboard() {
       // --- MOCK END ---
 
       // --- REAL AXIOS CALL (uncomment when backend is ready) ---
-      // const response = await axiosInstance.get('/supreme-council/reports')
+      // const response = await axiosInstance.get('/reports')
       // setReport(response.data)
       // ============================================================
       // 🔧 BACKEND INTEGRATION POINT
@@ -141,7 +172,7 @@ export default function SupremeCouncilDashboard() {
           </p>
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <h1 className="text-4xl sm:text-5xl font-black tracking-tight uppercase text-stone-900 dark:text-white">
-              Supreme Council
+              {title}
             </h1>
             <Button
               variant="outline"
