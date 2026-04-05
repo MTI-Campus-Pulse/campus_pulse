@@ -4,6 +4,7 @@ from fastapi import APIRouter, HTTPException, responses
 from supabase import create_client, Client
 from fpdf import FPDF
 from datetime import datetime
+
 import arabic_reshaper
 from bidi.algorithm import get_display
 

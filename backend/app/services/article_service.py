@@ -2,6 +2,7 @@ import json
 import os
 from datetime import datetime, timezone
 from supabase import create_client, Client
+
 # تأكدي إن المسار ده هو اللي فيه الفايل بالظبط
 JSON_FILE_PATH = r"C:\campus_pulse-main\scraper\webscraping\articles.json"
 SB_URL = "https://imlydashdkziznmjhfgy.supabase.co"
@@ -14,11 +15,12 @@ class ArticleService:
     def get_vectorized_article():
         # 1. جلب البيانات من سوبابيز
         # اتأكدي إن الحالة في سوبابيز مكتوبة سمول vectorized
+
         response = supabase.table("articles").select("article_id", "category_id", "status").eq("status", "vectorized").execute()
 
         if not response.data:
             print("DEBUG: No article found in Supabase with status 'pinned'")
-            return []
+        return []
 
         # 2. قراءة ملف الجايسون
         if not os.path.exists(JSON_FILE_PATH):
@@ -43,7 +45,7 @@ class ArticleService:
                     "title": json_data.get("title"),
                     "summary": json_data.get("summary")
                    })
-        
+   
         print(f"DEBUG: Successfully matched {len(article_list)} articles")
         return article_list
 
@@ -72,6 +74,7 @@ class ArticleService:
             "status": "published",
             "university_media_adviser": adviser_id,
             "published_at": datetime.now(timezone.utc).isoformat()
+
         }
 
         result = supabase.table("articles").update(update_payload).eq("article_id", article_id).execute()

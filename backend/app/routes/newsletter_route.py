@@ -21,3 +21,4 @@ async def get_student_newsletter(
     except Exception as e:
         # دي عشان لو فيه غلطة في الـ JSON أو الداتابيز تظهرلك بوضوح
         raise HTTPException(status_code=500, detail=f"Internal Server Error: {str(e)}")
+

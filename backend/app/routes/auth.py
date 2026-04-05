@@ -47,8 +47,8 @@ def login(email: str = Form(...), password: str = Form(...), db: Session = Depen
         traceback.print_exc()
         raise HTTPException(status_code=500, detail="خطأ داخلي في الخادم")
 
-
 @router.get("/user")
+
 def user(email: str, db: Session = Depends(get_db)):
     """عرض بيانات صفحة التسجيل كـ JSON"""
     try:

@@ -1,4 +1,6 @@
-from app.models.post import Post
+from backend.app.db.database import get_db
+from backend.app.models.post import Post
+from ..services.email_service import send_email
 from typing import List
 
 def create_post(title: str, content: str, category: str) -> dict:
@@ -16,4 +18,23 @@ def create_post(title: str, content: str, category: str) -> dict:
 def get_all_posts() -> List[dict]:
     """الحصول على كل البوستات"""
     return Post
+
+
+def notify_interested_users(post: dict) -> List[str]:
+    """إرسال إشعارات للطلاب المهتمين"""
+    notified_emails = []
+    
+    for email, user_data,db_article in get_db.items():
+        if db_article["status"] == "published":    
+            if user_data["role"] == "student":
+                user_interests = [i["name"] for i in user_data.get("interests", [])]
+                if post["category"] in user_interests:
+                    send_email(
+                        to_email=email,
+                        subject=f"📢 بوست جديد: {post['title']}",
+                        body=f"تم نشر بوست جديد في فئة {post['category']}\n\n{post['content'][:150]}..."
+                    )
+                    notified_emails.append(email)
+        
+    return notified_emails
 

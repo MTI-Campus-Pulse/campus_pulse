@@ -1,11 +1,16 @@
 from pydantic import BaseModel, ConfigDict
 from datetime import datetime
+<<<<<<< HEAD
 from typing import List, Optional
+=======
+from typing import List
+>>>>>>> origin/main
 
 class NewsletterBase(BaseModel):
     user_id: int
     articles_count: int
 
+<<<<<<< HEAD
 # محتاجين سكيما صغيرة لشكل الخبر جوه النشرة
 class NewsletterArticleSchema(BaseModel):
     article_id: int
@@ -27,3 +32,14 @@ class NewsletterResponse(BaseModel):
     
     # إضافة الحقل ده لو هتحتاجي ترجعي الأخبار جوه النشرة في ريكويست واحد
     # articles: Optional[List[ArticleInNewsletter]] = None
+=======
+class NewsletterResponse(NewsletterBase):
+    newsletter_id: int
+    published_date: datetime  # تعديل الاسم ليتطابق مع الداتابيز
+    edition: int = None  # رقم الإصدار
+    
+    # إضافة الحقل ده لو هتحتاجي ترجعي الأخبار جوه النشرة في ريكويست واحد
+    # articles: Optional[List[ArticleInNewsletter]] = None 
+
+    model_config = ConfigDict(from_attributes=True)
+>>>>>>> origin/main

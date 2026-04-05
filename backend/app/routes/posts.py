@@ -4,6 +4,7 @@ from app.db.database import get_db
 from app.models.article import Article  # افترض وجود نموذج Article
 from app.models.post import Category  # افترض وجود نموذج Category
 from app.services.campus_pipeline import process_text  # افترض وجود دالة لمعالجة النصوص عبر AI
+
 import json
 import os
 from datetime import datetime
@@ -33,9 +34,11 @@ def sync_posts_from_json(db: Session = Depends(get_db)):
                 continue
 
            # 2. البحث في قاعدة البيانات عن الخبر (للتحقق من الحالة فقط)
+
             db_article = db.query(Article).filter(
                 Article.article_id == article_id,
                 Article.status == "cleaned"
+
             ).first()
 
             if not db_article:
@@ -60,12 +63,14 @@ def sync_posts_from_json(db: Session = Depends(get_db)):
             db_article.status = "pinned"
             db_article.category_id = category_id
             db_article.embedding= ai_result["text_vector"]
+
             db.commit()
 
             # 6. تحديث العنصر في القائمة لحفظه في JSON
             item["summary"] = ai_result["summary"]
             item["category"] = category_name
             #item["vector"] = ai_result["text_vector"]
+
             item["processed_at"] = datetime.now().isoformat()
             processed_data.append(item)
 
@@ -73,6 +78,7 @@ def sync_posts_from_json(db: Session = Depends(get_db)):
 
         # 7. حفظ النسخة المحدثة في نفس ملف JSON
         with open(JSON_FILE_PATH_2, "w", encoding="utf-8") as f:
+
             json.dump(processed_data, f, ensure_ascii=False, indent=2)
 
         return {
@@ -84,4 +90,3 @@ def sync_posts_from_json(db: Session = Depends(get_db)):
     except Exception as e:
         db.rollback()
         raise HTTPException(status_code=500, detail=f"خطأ أثناء المعالجة: {str(e)}")
-

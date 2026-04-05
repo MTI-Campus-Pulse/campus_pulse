@@ -10,3 +10,4 @@ class Role(Base):
 
     # علاقة مع جدول اليوزرز (كل رول ممكن يكون تحتها يوزرز كتير)
     users = relationship("User", back_populates="roles")
+

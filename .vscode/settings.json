@@ -3,6 +3,10 @@
     "python.analysis.extraPaths": [
         "./backend/app/db",
         "./backend/app/db"
+<<<<<<< HEAD
     ],
     "python-envs.defaultEnvManager": "ms-python.python:venv"
+=======
+    ]
+>>>>>>> origin/main
 }

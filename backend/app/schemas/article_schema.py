@@ -1,9 +1,6 @@
 from pydantic import BaseModel, ConfigDict, Field
 from typing import Optional, List
 from datetime import datetime
-
-
-
 # --- 1. البيانات الكاملة للخبر (دمج JSON + DB) ---
 class ArticlesDashboardResponse(BaseModel):
     article_id: int
@@ -14,6 +11,7 @@ class ArticlesDashboardResponse(BaseModel):
     # scrapped_at: datetime
     # تاريخ النشر هيظهر هنا لو الخبر حالته published
     published_at: Optional[datetime] = None 
+
     
     model_config = ConfigDict(from_attributes=True)
 
@@ -31,6 +29,7 @@ class ArticlesPublicView(BaseModel):
     photo: Optional[str] = None
     category_id: int
     published_at: datetime  # لازم يكون موجود للأخبار المنشورة
+
     newsletter_id: Optional[int] = None
     
     model_config = ConfigDict(from_attributes=True)

@@ -1,6 +1,7 @@
 # app/schemas/user.py
 from pydantic import BaseModel
 from typing import Optional, List   
+
 from realtime import BaseModel
 
 # أو أفضل: عرّف نموذجًا فرعيًا
