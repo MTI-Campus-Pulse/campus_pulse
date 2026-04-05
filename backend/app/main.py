@@ -1,53 +1,24 @@
 from fastapi import FastAPI
-from app.core.config import settings
-from app.routes import article_route , newsletter_route
-# from fastapi.middleware.cors import CORSMiddleware
+from fastapi.middleware.cors import CORSMiddleware
+from dotenv import load_dotenv
+from app.routes import (
+    auth, posts, feedback, chat, reports,
+    home, manual_email, profile,
+    article_route, newsletter_route
+)
+from app.db.database import SessionLocal
+from sqlalchemy.orm import Session
+from apscheduler.schedulers.background import BackgroundScheduler
+from apscheduler.triggers.cron import CronTrigger
+from app.services.weekly_sender import send_all_ready_newsletters
 
+# تحميل المتغيرات البيئية
+load_dotenv()
+
+# إنشاء التطبيق
 app = FastAPI(title="University Newsletter System")
 
-# قائمة بالعناوين المسموح لها تكلم الباك إند
-# origins = ["*"]
-# app.add_middleware(
-#     CORSMiddleware,
-#     allow_origins=origins,
-#     allow_credentials=True,
-#     allow_methods=["*"], # السماح بكل أنواع الطلبات (GET, POST, etc.)
-#     allow_headers=["*"], # السماح بكل الـ Headers
-# )
-
-# تضمين الروت الجديد الخاص بالمقالات
-app.include_router(article_route.router)
-app.include_router(newsletter_route.router)
-
-@app.get("/")
-def read_root():
-    return {"message": "Welcome to University Newsletter API - Articles System"}
-
-
-
-from fastapi.middleware.cors import CORSMiddleware
-from backend.app.routes import auth, posts, feedback, chat, reports
-from fastapi import FastAPI
-from supabase import create_client, Client
-import matplotlib.pyplot as plt
-from datetime import datetime
-from fastapi.middleware.cors import CORSMiddleware
-from bidi.algorithm import get_display
-from dotenv import load_dotenv  # 1. استيراد المكتبة
-import os
-from backend.app.ai_modules import CampusPulsePipeline
-import json
-
-load_dotenv() 
-
-# import google.generativeai as genai
-
-# genai.configure(api_key="YOUR_API_KEY")
-
-# model = genai.GenerativeModel("gemini-pro")
-# response = model.generate_content("لخص هذا النص بالعربية...")
-# print(response.text)  
-
+# CORS
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -56,8 +27,42 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# تسجيل الراوترات
 app.include_router(auth.router)
 app.include_router(posts.router)
 app.include_router(feedback.router)
-# app.include_router(chat.router)
 app.include_router(reports.router)
+app.include_router(article_route.router)
+app.include_router(newsletter_route.router)
+app.include_router(home.router)
+app.include_router(manual_email.router)
+app.include_router(profile.router)
+
+@app.get("/")
+def read_root():
+    return {"message": "Welcome to University Newsletter API - Articles System"}
+
+# === الجدولة الأسبوعية ===
+def job_wrapper():
+    db: Session = SessionLocal()
+    try:
+        send_all_ready_newsletters(db)
+    finally:
+        db.close()
+
+scheduler = BackgroundScheduler()
+scheduler.add_job(
+    func=job_wrapper,
+    trigger=CronTrigger(day_of_week="sun", hour=12, minute=18),  # كل أحد 12:18 ظهرًا
+    id="weekly_newsletter",
+    replace_existing=True
+)
+
+@app.on_event("startup")
+def start_scheduler():
+    scheduler.start()
+    print("✅ Weekly email scheduler started!")
+
+@app.on_event("shutdown")
+def shutdown_scheduler():
+    scheduler.shutdown()

@@ -1,7 +1,12 @@
 from sqlalchemy import Column, Integer, String, DateTime, JSON, ForeignKey
 from sqlalchemy.sql import func
+<<<<<<< HEAD
+from app.db.database import Base
+from sqlalchemy.orm import relationship
+=======
 from backend.app.db.database import Base
 
+>>>>>>> origin/main
 class User(Base):
     __tablename__ = "users"
 
@@ -15,4 +20,10 @@ class User(Base):
     student_id = Column(Integer, unique=True, nullable=True)
     joined_at = Column(DateTime(timezone=True), server_default=func.now())
     # يخزن أوزان الاهتمامات بشكل رياضي (Embedding)
+<<<<<<< HEAD
     preference_vector = Column(JSON, nullable=True)
+
+    roles = relationship("Role", back_populates="users") 
+=======
+    preference_vector = Column(JSON, nullable=True)
+>>>>>>> origin/main

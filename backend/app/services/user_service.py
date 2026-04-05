@@ -1,6 +1,7 @@
 from sqlalchemy.orm import Session
-from backend.app.models.user import User, UserPreference
-from backend.app.models.post import Category  # ← نموذج الفئة
+from app.models.users import User
+from app.models.user_preference import UserPreference
+from app.models.post import Category  # ← نموذج الفئة
 from typing import Optional, List
 from ..core.security import hash_password, verify_password
 
