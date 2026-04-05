@@ -1,9 +1,8 @@
-from fastapi import APIRouter, HTTPException, Depends
+from fastapi import APIRouter, Depends
 from pydantic import BaseModel
 from typing import List, Optional
-import os
 from dotenv import load_dotenv
-from ..db.database import get_db  # استيراد قاعدة البيانات الخاصة بك
+from app.db.database import get_db  # استيراد قاعدة البيانات الخاصة بك
 
 # تحميل .env أول حاجة
 load_dotenv()

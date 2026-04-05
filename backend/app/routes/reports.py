@@ -1,11 +1,10 @@
 import os
 import matplotlib.pyplot as plt
-from fastapi import APIRouter, FastAPI, HTTPException, responses
+from fastapi import APIRouter, HTTPException, responses
 from supabase import create_client, Client
 from fpdf import FPDF
 from datetime import datetime
-from fastapi.middleware.cors import CORSMiddleware
-import uvicorn
+
 import arabic_reshaper
 from bidi.algorithm import get_display
 

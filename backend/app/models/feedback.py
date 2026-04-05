@@ -1,6 +1,6 @@
 from sqlalchemy import Column, Integer, Text, DateTime, ForeignKey
 from datetime import datetime
-from backend.app.db.database import Base
+from app.db.database import Base
 
 class Feedback(Base):
     __tablename__ = "feedback"

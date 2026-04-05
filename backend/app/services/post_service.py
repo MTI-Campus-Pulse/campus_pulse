@@ -1,7 +1,7 @@
 from backend.app.db.database import get_db
 from backend.app.models.post import Post
 from ..services.email_service import send_email
-from typing import List, Dict
+from typing import List
 
 def create_post(title: str, content: str, category: str) -> dict:
     """إنشاء بوست جديد"""
@@ -18,6 +18,7 @@ def create_post(title: str, content: str, category: str) -> dict:
 def get_all_posts() -> List[dict]:
     """الحصول على كل البوستات"""
     return Post
+
 
 def notify_interested_users(post: dict) -> List[str]:
     """إرسال إشعارات للطلاب المهتمين"""
@@ -36,3 +37,4 @@ def notify_interested_users(post: dict) -> List[str]:
                     notified_emails.append(email)
         
     return notified_emails
+
