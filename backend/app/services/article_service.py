@@ -2,12 +2,12 @@ import json
 import os
 from datetime import datetime, timezone
 from supabase import create_client, Client
-from app.core.config import settings
-
-supabase: Client = create_client(settings.SUPABASE_URL, settings.SUPABASE_KEY)
 
 # تأكدي إن المسار ده هو اللي فيه الفايل بالظبط
-JSON_FILE_PATH = "D:\\fastApi11\\Campus_pulse\\scraper\\pipelines\\final_clean_posts.json"
+JSON_FILE_PATH = r"C:\campus_pulse-main\scraper\webscraping\articles.json"
+SB_URL = "https://imlydashdkziznmjhfgy.supabase.co"
+SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImltbHlkYXNoZGt6aXpubWpoZmd5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAyOTI2MDEsImV4cCI6MjA4NTg2ODYwMX0.MR0PyzmIwXlz06HOhyZt9dYypL9BV4YboVqbpuEAF-8"
+supabase: Client = create_client(SB_URL, SB_KEY)
 
 class ArticleService:
 
@@ -15,14 +15,12 @@ class ArticleService:
     def get_vectorized_article():
         # 1. جلب البيانات من سوبابيز
         # اتأكدي إن الحالة في سوبابيز مكتوبة سمول vectorized
-        response = supabase.table("articles") \
-            .select("article_id, category_id, status") \
-            .eq("status", "vectorized") \
-            .execute()
+
+        response = supabase.table("articles").select("article_id", "category_id", "status").eq("status", "vectorized").execute()
 
         if not response.data:
-            print("DEBUG: No article found in Supabase with status 'vectorized'")
-            return []
+            print("DEBUG: No article found in Supabase with status 'pinned'")
+        return []
 
         # 2. قراءة ملف الجايسون
         if not os.path.exists(JSON_FILE_PATH):
@@ -45,10 +43,9 @@ class ArticleService:
                     "category_id": row['category_id'],
                     "status": row['status'],
                     "title": json_data.get("title"),
-                    "summary": json_data.get("summary"),
-                    "scrapped_at": json_data.get("scraped_at") # تعديل الاسم لـ scraped (واحد p)
-                })
-        
+                    "summary": json_data.get("summary")
+                   })
+   
         print(f"DEBUG: Successfully matched {len(article_list)} articles")
         return article_list
 
@@ -76,7 +73,8 @@ class ArticleService:
         update_payload = {
             "status": "published",
             "university_media_adviser": adviser_id,
-            "publish_at": datetime.now(timezone.utc).isoformat()
+            "published_at": datetime.now(timezone.utc).isoformat()
+
         }
 
         result = supabase.table("articles").update(update_payload).eq("article_id", article_id).execute()

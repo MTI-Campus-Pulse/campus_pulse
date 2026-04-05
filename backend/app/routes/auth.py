@@ -1,9 +1,9 @@
-from fastapi import APIRouter, Form, Request, HTTPException, Depends
+from fastapi import APIRouter, Form, HTTPException, Depends
 from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session
-from backend.app.db.database import get_db
-from backend.app.services.user_service import authenticate_user, register_user, get_user_role
-from backend.app.models.user import User
+from app.db.database import get_db
+from app.services.user_service import authenticate_user, register_user, get_user_role
+from app.models.users import User
 import traceback
 
 router = APIRouter()
@@ -47,8 +47,8 @@ def login(email: str = Form(...), password: str = Form(...), db: Session = Depen
         traceback.print_exc()
         raise HTTPException(status_code=500, detail="خطأ داخلي في الخادم")
 
+@router.get("/user")
 
-@router.get("/")
 def user(email: str, db: Session = Depends(get_db)):
     """عرض بيانات صفحة التسجيل كـ JSON"""
     try:

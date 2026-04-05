@@ -1,7 +1,8 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, DateTime, ARRAY, Float
+from sqlalchemy import Column, Integer, Text, ForeignKey, DateTime, func
 from sqlalchemy.orm import relationship
-from backend.app.db.database import Base
+from app.db.database import Base
 from datetime import datetime
+from pgvector.sqlalchemy import Vector
 
 class Article(Base):
     __tablename__ = "articles"
@@ -13,13 +14,12 @@ class Article(Base):
     # المستشار الإعلامي المسؤول عن النشر
     university_media_adviser = Column(Integer, ForeignKey("users.user_id"), nullable=True)
     
-    status = Column(String, default="draft") # pending, vectorized, published
+    status = Column(Text, default="draft") # pending, vectorized, published
     
     # عمود التاريخ بصيغة TimeZone (timestamptz)
-    publish_at = Column(DateTime(timezone=True), nullable=False)
+    published_at = Column(DateTime(timezone=True), server_default=func.now())
     
     # عمود الفيكتور (Embedding)
-    embedding = Column(ARRAY(Float), nullable=True)
-
+    embedding = Column(Vector(384))
     # العلاقات (اختياري حسب الجداول الأخرى عندك)
     publisher = relationship("User")
