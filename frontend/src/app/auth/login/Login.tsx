@@ -594,6 +594,7 @@ export default function Login() {
           name: 'Ahmed Mohamed',
           email: payload.email,
           role: 'manager', // ← change this to test other roles
+
         },
       }
       // Treat mock as a successful response

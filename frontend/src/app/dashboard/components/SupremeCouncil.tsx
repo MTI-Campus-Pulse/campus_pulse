@@ -4,8 +4,9 @@ import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import {
   Loader2, AlertTriangle, RefreshCcw, Newspaper,
-  Users, BookOpen, TrendingUp, Eye
+  Users, BookOpen, TrendingUp, Eye, FileText, Database
 } from 'lucide-react'
+import { ReportsViewer, QueriesViewer } from '../components/ManagerDashboard'
 import axiosInstance from '@/lib/axiosInstance'
 
 // ============================================================
@@ -26,7 +27,6 @@ type Report = {
 
 // ============================================================
 // 🔧 MOCK DATA (delete this when backend is ready)
-// Simulates the response from GET /supreme-council/reports
 // ============================================================
 const MOCK_REPORT: Report = {
   total_articles_published: 142,
@@ -85,22 +85,18 @@ function StatCard({ icon, label, value, iconBg }: StatCardProps) {
 }
 
 export default function SupremeCouncilDashboard() {
+  const [activeSection, setActiveSection] = useState<'home' | 'reports' | 'queries'>('home')
   const [report, setReport] = useState<Report | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
-  // ============================================================
-  // 🔧 BACKEND INTEGRATION POINT
-  // Fetch the system report for the supreme council.
-  // Confirm endpoint with your backend team:
-  //   GET /supreme-council/reports
-  // ============================================================
+  // ✅ 1. fetchReport function - BEFORE early return
   const fetchReport = async () => {
     setLoading(true)
     setError(null)
 
     try {
-      // --- MOCK START (delete this block when backend is ready) ---
+      // --- MOCK START ---
       await new Promise((r) => setTimeout(r, 900))
       setReport(MOCK_REPORT)
       // --- MOCK END ---
@@ -108,11 +104,6 @@ export default function SupremeCouncilDashboard() {
       // --- REAL AXIOS CALL (uncomment when backend is ready) ---
       // const response = await axiosInstance.get('/supreme-council/reports')
       // setReport(response.data)
-      // ============================================================
-      // 🔧 BACKEND INTEGRATION POINT
-      // Adjust if report is nested:
-      //   response.data       → Report
-      //   response.data.data  → Report
       // ============================================================
 
     } catch (err: any) {
@@ -126,10 +117,27 @@ export default function SupremeCouncilDashboard() {
     }
   }
 
+  // ✅ 2. useEffect - BEFORE early return (React Hook Rules)
   useEffect(() => {
     fetchReport()
   }, [])
 
+  // ✅ 3. Early return for Reports/Queries views (AFTER hooks)
+  if (activeSection !== 'home') {
+    return (
+      <>
+        {/* Overlay to hide global navbar */}
+        <div className="fixed top-0 left-0 right-0 h-20 bg-[#f8f5f0] dark:bg-slate-950 z-[60]" />
+        
+        {activeSection === 'reports' 
+          ? <ReportsViewer userRole="supreme_council" onBack={() => setActiveSection('home')} />
+          : <QueriesViewer userRole="supreme_council" onBack={() => setActiveSection('home')} />
+        }
+      </>
+    );
+  }
+
+  // ✅ 4. Main Dashboard Content (Original + New Cards)
   return (
     <div className="min-h-screen bg-[#f8f5f0] dark:bg-slate-950 font-serif">
       <div className="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12 py-10 lg:py-16 mt-10">
@@ -187,7 +195,38 @@ export default function SupremeCouncilDashboard() {
         {!loading && report && (
           <div className="space-y-12">
 
-            {/* Stat Cards */}
+            {/* ✅ NEW: Reports & Queries Quick Access Cards */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-10">
+              <button
+                onClick={() => setActiveSection('reports')}
+                className="group bg-white dark:bg-slate-900 rounded-2xl border-2 border-stone-200 dark:border-stone-700 shadow-sm hover:shadow-lg hover:border-amber-500 transition-all duration-300 p-6 flex items-center gap-5 text-left"
+              >
+                <div className="w-14 h-14 rounded-2xl bg-amber-100 dark:bg-amber-950 flex items-center justify-center group-hover:scale-110 transition-transform">
+                  <FileText className="h-7 w-7 text-amber-600 dark:text-amber-400" />
+                </div>
+                <div>
+                  <h3 className="font-bold text-stone-900 dark:text-white text-lg">Manager Reports</h3>
+                  <p className="text-sm text-stone-500 dark:text-stone-400 mt-1">View reports sent by the Manager dashboard</p>
+                </div>
+                <FileText className="h-5 w-5 text-stone-400 ml-auto group-hover:translate-x-1 transition-transform" />
+              </button>
+
+              <button
+                onClick={() => setActiveSection('queries')}
+                className="group bg-white dark:bg-slate-900 rounded-2xl border-2 border-stone-200 dark:border-stone-700 shadow-sm hover:shadow-lg hover:border-yellow-500 transition-all duration-300 p-6 flex items-center gap-5 text-left"
+              >
+                <div className="w-14 h-14 rounded-2xl bg-yellow-100 dark:bg-yellow-950 flex items-center justify-center group-hover:scale-110 transition-transform">
+                  <Database className="h-7 w-7 text-yellow-600 dark:text-yellow-400" />
+                </div>
+                <div>
+                  <h3 className="font-bold text-stone-900 dark:text-white text-lg">Database Queries</h3>
+                  <p className="text-sm text-stone-500 dark:text-stone-400 mt-1">Access raw data queries and exports</p>
+                </div>
+                <Database className="h-5 w-5 text-stone-400 ml-auto group-hover:translate-x-1 transition-transform" />
+              </button>
+            </div>
+
+            {/* Original Stat Cards */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               <StatCard
                 icon={<Newspaper className="h-7 w-7 text-indigo-600 dark:text-indigo-400" />}

@@ -1,7 +1,7 @@
-import React from 'react'
+// Admin.tsx
+import React from 'react';
+import { ReportsViewer } from './ManagerDashboard'; // استورد المكون
 
 export default function Admin() {
-  return (
-    <div>Admin</div>
-  )
+  return <ReportsViewer userRole="admin" />;
 }

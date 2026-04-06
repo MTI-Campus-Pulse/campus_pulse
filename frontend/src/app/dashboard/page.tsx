@@ -7,6 +7,12 @@ import StudentDashboard from './components/StudentDashboard'
 import ManagerDashboard from './components/ManagerDashboard'
 import MediaAdviserDashboard from './components/MediaAdviser'
 import SupremeCouncilDashboard from './components/SupremeCouncil'
+import NAQAAE from './components/NAQAAE'
+import Admin from './components/Admin'
+import Council from './components/Council'
+import QualityAssuranceDashboard from './components/QualityAssurance'
+import StakeholderDashboard from './components/Ministry'
+import UniPresidentDashboard from './components/UniPresident'
 
 // ============================================================
 // 🔧 BACKEND INTEGRATION POINT
@@ -54,15 +60,21 @@ export default function DashboardPage() {
     case 'manager':
       return <ManagerDashboard />
     case 'admin':
-      return <ManagerDashboard /> 
+      return <Admin /> 
     case 'council':
-      return <ManagerDashboard /> 
+      return <Council /> 
     case 'supreme_council':
       return <SupremeCouncilDashboard /> 
     case 'naqaae':
-      return <ManagerDashboard /> 
+      return <NAQAAE /> 
     case 'media_adviser':
       return <MediaAdviserDashboard /> 
+    case 'ministry':
+    return <StakeholderDashboard />
+    case 'quality':
+      return <QualityAssuranceDashboard />
+    case 'president':
+      return <UniPresidentDashboard />
     default:
       // Unknown role → redirect to login
       router.push('/auth/login')

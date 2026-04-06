@@ -1,11 +1,122 @@
+// 'use client'
+
+// import { useState, useEffect } from 'react'
+// import { Button } from '@/components/ui/button'
+// import {
+//   Loader2, AlertTriangle, RefreshCcw, Newspaper,
+//   Users, BookOpen, TrendingUp, Eye, FileText, Database
+// } from 'lucide-react'
+// import { ReportsViewer, QueriesViewer } from '../components/ManagerDashboard'
+// import axiosInstance from '@/lib/axiosInstance'
+
+// // ============================================================
+// // 🔧 BACKEND INTEGRATION POINT
+// // Confirm these field names with your backend team.
+// // ============================================================
+// type Report = {
+//   total_articles_published: number
+//   total_users_registered: number
+//   newsletter_editions_count: number
+//   most_read_articles: {
+//     article_id: number
+//     title: string
+//     category: string
+//     views: number
+//   }[]
+// }
+
+// // ============================================================
+// // 🔧 MOCK DATA (delete this when backend is ready)
+// // ============================================================
+// const MOCK_REPORT: Report = {
+//   total_articles_published: 142,
+//   total_users_registered: 1380,
+//   newsletter_editions_count: 24,
+//   most_read_articles: [
+//     { article_id: 1, title: "AI Conference at MTI Draws Global Experts",           category: "tech",          views: 4821 },
+//     { article_id: 2, title: "MTI Wins Big at Annual Inter-University Sports Day",  category: "sports",        views: 3654 },
+//     { article_id: 3, title: "New Research Lab Opens in Engineering Building",       category: "research",      views: 2910 },
+//     { article_id: 4, title: "Registration for the New Academic Semester is Open",  category: "announcements", views: 2540 },
+//     { article_id: 5, title: "Annual Fun Day Brings Record Attendance",             category: "events",        views: 2100 },
+//   ],
+// }
+
+// const CATEGORY_LABELS: Record<string, string> = {
+//   events:        "Campus Events",
+//   sports:        "Sports",
+//   tech:          "Technology",
+//   research:      "Research",
+//   announcements: "Announcements",
+//   clubs:         "Student Clubs",
+// }
+
+// const CATEGORY_COLORS: Record<string, string> = {
+//   events:        "bg-rose-100 text-rose-700 dark:bg-rose-950 dark:text-rose-300",
+//   sports:        "bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300",
+//   tech:          "bg-blue-100 text-blue-700 dark:bg-blue-950 dark:text-blue-300",
+//   research:      "bg-purple-100 text-purple-700 dark:bg-purple-950 dark:text-purple-300",
+//   announcements: "bg-amber-100 text-amber-700 dark:bg-amber-950 dark:text-amber-300",
+//   clubs:         "bg-indigo-100 text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300",
+// }
+
+// // Role to display title mapping
+// const ROLE_TITLES: Record<string, string> = {
+//   supreme_council:    "Supreme Council",
+//   naqaae:             "NAQAAE",
+//   council:            "Council of Private Universities",
+//   manager:            "University President",
+//   quality_assurance:  "Quality Assurance Unit",
+//   supreme_universities: "Supreme Council of Universities",
+//   ministry:           "Ministry of Higher Education",
+// }
+
+// // ✅ Role to theme colors mapping for Reports/Queries cards
+// const ROLE_CARD_COLORS: Record<string, { reports: string; queries: string; reportsBg: string; queriesBg: string }> = {
+//   supreme_council:    { reports: 'amber', queries: 'yellow', reportsBg: 'bg-amber-100 dark:bg-amber-950', queriesBg: 'bg-yellow-100 dark:bg-yellow-950' },
+//   naqaae:             { reports: 'blue', queries: 'purple', reportsBg: 'bg-blue-100 dark:bg-blue-950', queriesBg: 'bg-purple-100 dark:bg-purple-950' },
+//   council:            { reports: 'indigo', queries: 'purple', reportsBg: 'bg-indigo-100 dark:bg-indigo-950', queriesBg: 'bg-purple-100 dark:bg-purple-950' },
+//   quality_assurance:  { reports: 'cyan', queries: 'blue', reportsBg: 'bg-cyan-100 dark:bg-cyan-950', queriesBg: 'bg-blue-100 dark:bg-blue-950' },
+//   ministry:           { reports: 'emerald', queries: 'teal', reportsBg: 'bg-emerald-100 dark:bg-emerald-950', queriesBg: 'bg-teal-100 dark:bg-teal-950' },
+//   default:            { reports: 'indigo', queries: 'purple', reportsBg: 'bg-indigo-100 dark:bg-indigo-950', queriesBg: 'bg-purple-100 dark:bg-purple-950' },
+// }
+
+// type StatCardProps = {
+//   icon: React.ReactNode
+//   label: string
+//   value: number
+//   iconBg: string
+// }
+
+// function StatCard({ icon, label, value, iconBg }: StatCardProps) {
+//   return (
+//     <div className="bg-white dark:bg-slate-900 rounded-2xl border border-stone-200 dark:border-stone-700 shadow-sm p-7 flex items-center gap-6 hover:shadow-md transition-shadow duration-300">
+//       <div className={`w-14 h-14 rounded-2xl flex items-center justify-center shrink-0 ${iconBg}`}>
+//         {icon}
+//       </div>
+//       <div>
+//         <p className="text-sm text-stone-500 dark:text-stone-400 font-medium uppercase tracking-wide">
+//           {label}
+//         </p>
+//         <p className="text-4xl font-black text-stone-900 dark:text-white mt-1">
+//           {value.toLocaleString()}
+//         </p>
+//       </div>
+//     </div>
+//   )
+// }
+
+// ============================================================
+// This single component is reused for ALL stakeholder roles.
+// ============================================================
 'use client'
 
 import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import {
   Loader2, AlertTriangle, RefreshCcw, Newspaper,
-  Users, BookOpen, TrendingUp, Eye
+  Users, BookOpen, TrendingUp, Eye, FileText, Database
 } from 'lucide-react'
+import { ReportsViewer, QueriesViewer } from '../components/ManagerDashboard'
 import axiosInstance from '@/lib/axiosInstance'
 
 // ============================================================
@@ -26,7 +137,6 @@ type Report = {
 
 // ============================================================
 // 🔧 MOCK DATA (delete this when backend is ready)
-// Simulates the response from GET /reports
 // ============================================================
 const MOCK_REPORT: Report = {
   total_articles_published: 142,
@@ -60,11 +170,6 @@ const CATEGORY_COLORS: Record<string, string> = {
 }
 
 // Role to display title mapping
-// ============================================================
-// 🔧 BACKEND INTEGRATION POINT
-// Make sure the role strings here match exactly what your
-// backend returns in the login response.
-// ============================================================
 const ROLE_TITLES: Record<string, string> = {
   supreme_council:    "Supreme Council",
   naqaae:             "NAQAAE",
@@ -102,10 +207,9 @@ function StatCard({ icon, label, value, iconBg }: StatCardProps) {
 
 // ============================================================
 // This single component is reused for ALL stakeholder roles.
-// The title changes automatically based on the role stored
-// in localStorage after login.
 // ============================================================
 export default function StakeholderDashboard() {
+  const [activeSection, setActiveSection] = useState<'home' | 'reports' | 'queries'>('home')
   const [report, setReport] = useState<Report | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -117,21 +221,13 @@ export default function StakeholderDashboard() {
   const role = storedUser?.role || ''
   const title = ROLE_TITLES[role] || 'Dashboard'
 
-  // ============================================================
-  // 🔧 BACKEND INTEGRATION POINT
-  // Fetch the system report.
-  // Confirm endpoint with your backend team: GET /reports
-  // If each role has its own endpoint, adjust accordingly:
-  //   GET /supreme-council/reports
-  //   GET /naqaae/reports
-  //   etc.
-  // ============================================================
+  // ✅ Fetch function - BEFORE early return (React Hook Rules)
   const fetchReport = async () => {
     setLoading(true)
     setError(null)
 
     try {
-      // --- MOCK START (delete this block when backend is ready) ---
+      // --- MOCK START ---
       await new Promise((r) => setTimeout(r, 900))
       setReport(MOCK_REPORT)
       // --- MOCK END ---
@@ -140,12 +236,11 @@ export default function StakeholderDashboard() {
       // const response = await axiosInstance.get('/reports')
       // setReport(response.data)
       // ============================================================
-      // 🔧 BACKEND INTEGRATION POINT
+   // 🔧 BACKEND INTEGRATION POINT
       // Adjust if report is nested:
       //   response.data       → Report
       //   response.data.data  → Report
       // ============================================================
-
     } catch (err: any) {
       setError(
         err?.response?.data?.message ||
@@ -157,10 +252,126 @@ export default function StakeholderDashboard() {
     }
   }
 
+  // ✅ useEffect - BEFORE early return (React Hook Rules)
   useEffect(() => {
     fetchReport()
   }, [])
 
+  // ✅ Early return for Reports/Queries views (AFTER hooks)
+  if (activeSection !== 'home') {
+    return (
+      <>
+        {/* Overlay to hide global navbar */}
+        <div className="fixed top-0 left-0 right-0 h-20 bg-[#f8f5f0] dark:bg-slate-950 z-[60]" />
+        
+        {activeSection === 'reports' 
+          ? <ReportsViewer userRole={role} onBack={() => setActiveSection('home')} />
+          : <QueriesViewer userRole={role} onBack={() => setActiveSection('home')} />
+        }
+      </>
+    );
+  }
+
+  // ✅ Helper function to get Reports card classes based on role
+  const getReportsCardClasses = () => {
+    switch(role) {
+      case 'ministry':
+        return {
+          hover: 'hover:border-emerald-500',
+          bg: 'bg-emerald-100 dark:bg-emerald-950',
+          icon: 'text-emerald-600 dark:text-emerald-400',
+          arrow: 'text-emerald-500'
+        };
+      case 'naqaae':
+        return {
+          hover: 'hover:border-blue-500',
+          bg: 'bg-blue-100 dark:bg-blue-950',
+          icon: 'text-blue-600 dark:text-blue-400',
+          arrow: 'text-blue-500'
+        };
+      case 'council':
+        return {
+          hover: 'hover:border-indigo-500',
+          bg: 'bg-indigo-100 dark:bg-indigo-950',
+          icon: 'text-indigo-600 dark:text-indigo-400',
+          arrow: 'text-indigo-500'
+        };
+      case 'supreme_council':
+        return {
+          hover: 'hover:border-amber-500',
+          bg: 'bg-amber-100 dark:bg-amber-950',
+          icon: 'text-amber-600 dark:text-amber-400',
+          arrow: 'text-amber-500'
+        };
+      case 'quality_assurance':
+        return {
+          hover: 'hover:border-cyan-500',
+          bg: 'bg-cyan-100 dark:bg-cyan-950',
+          icon: 'text-cyan-600 dark:text-cyan-400',
+          arrow: 'text-cyan-500'
+        };
+      default:
+        return {
+          hover: 'hover:border-indigo-500',
+          bg: 'bg-indigo-100 dark:bg-indigo-950',
+          icon: 'text-indigo-600 dark:text-indigo-400',
+          arrow: 'text-indigo-500'
+        };
+    }
+  };
+
+  // ✅ Helper function to get Queries card classes based on role
+  const getQueriesCardClasses = () => {
+    switch(role) {
+      case 'ministry':
+        return {
+          hover: 'hover:border-teal-500',
+          bg: 'bg-teal-100 dark:bg-teal-950',
+          icon: 'text-teal-600 dark:text-teal-400',
+          arrow: 'text-teal-500'
+        };
+      case 'naqaae':
+        return {
+          hover: 'hover:border-purple-500',
+          bg: 'bg-purple-100 dark:bg-purple-950',
+          icon: 'text-purple-600 dark:text-purple-400',
+          arrow: 'text-purple-500'
+        };
+      case 'council':
+        return {
+          hover: 'hover:border-purple-500',
+          bg: 'bg-purple-100 dark:bg-purple-950',
+          icon: 'text-purple-600 dark:text-purple-400',
+          arrow: 'text-purple-500'
+        };
+      case 'supreme_council':
+        return {
+          hover: 'hover:border-yellow-500',
+          bg: 'bg-yellow-100 dark:bg-yellow-950',
+          icon: 'text-yellow-600 dark:text-yellow-400',
+          arrow: 'text-yellow-500'
+        };
+      case 'quality_assurance':
+        return {
+          hover: 'hover:border-blue-500',
+          bg: 'bg-blue-100 dark:bg-blue-950',
+          icon: 'text-blue-600 dark:text-blue-400',
+          arrow: 'text-blue-500'
+        };
+      default:
+        return {
+          hover: 'hover:border-purple-500',
+          bg: 'bg-purple-100 dark:bg-purple-950',
+          icon: 'text-purple-600 dark:text-purple-400',
+          arrow: 'text-purple-500'
+        };
+    }
+  };
+
+  const reportsClasses = getReportsCardClasses();
+  const queriesClasses = getQueriesCardClasses();
+
+  // ✅ Main Dashboard Content
   return (
     <div className="min-h-screen bg-[#f8f5f0] dark:bg-slate-950 font-serif">
       <div className="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12 py-10 lg:py-16 mt-10">
@@ -187,6 +398,40 @@ export default function StakeholderDashboard() {
               Refresh Report
             </Button>
           </div>
+        </div>
+
+        {/* ✅ NEW: Reports & Queries Quick Access Cards - Fixed Tailwind Classes */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-10">
+          
+          {/* Reports Card */}
+          <button
+            onClick={() => setActiveSection('reports')}
+            className={`group bg-white dark:bg-slate-900 rounded-2xl border-2 border-stone-200 dark:border-stone-700 shadow-sm hover:shadow-lg transition-all duration-300 p-6 flex items-center gap-5 text-left ${reportsClasses.hover}`}
+          >
+            <div className={`w-14 h-14 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform ${reportsClasses.bg}`}>
+              <FileText className={`h-7 w-7 ${reportsClasses.icon}`} />
+            </div>
+            <div>
+              <h3 className="font-bold text-stone-900 dark:text-white text-lg">Manager Reports</h3>
+              <p className="text-sm text-stone-500 dark:text-stone-400 mt-1">View reports sent by the Manager dashboard</p>
+            </div>
+            <FileText className={`h-5 w-5 text-stone-400 ml-auto group-hover:translate-x-1 transition-transform ${reportsClasses.arrow}`} />
+          </button>
+
+          {/* Queries Card */}
+          <button
+            onClick={() => setActiveSection('queries')}
+            className={`group bg-white dark:bg-slate-900 rounded-2xl border-2 border-stone-200 dark:border-stone-700 shadow-sm hover:shadow-lg transition-all duration-300 p-6 flex items-center gap-5 text-left ${queriesClasses.hover}`}
+          >
+            <div className={`w-14 h-14 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform ${queriesClasses.bg}`}>
+              <Database className={`h-7 w-7 ${queriesClasses.icon}`} />
+            </div>
+            <div>
+              <h3 className="font-bold text-stone-900 dark:text-white text-lg">Database Queries</h3>
+              <p className="text-sm text-stone-500 dark:text-stone-400 mt-1">Access raw data queries and exports</p>
+            </div>
+            <Database className={`h-5 w-5 text-stone-400 ml-auto group-hover:translate-x-1 transition-transform ${queriesClasses.arrow}`} />
+          </button>
         </div>
 
         {/* Error */}
