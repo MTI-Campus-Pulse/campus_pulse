@@ -1,7 +1,7 @@
 import React from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { Twitter, Instagram, Linkedin, Github, Mail } from 'lucide-react'
+import { Twitter, Instagram, Linkedin, Github, Mail, Facebook, FacebookIcon } from 'lucide-react'
 
 export default function Footer() {
   return (
@@ -35,17 +35,13 @@ export default function Footer() {
 
             {/* Social icons */}
             <div className="flex gap-5 mt-6">
-              <a href="#" className="text-slate-400 hover:text-indigo-400 transition-colors">
-                <Twitter size={20} />
-              </a>
+              
               <a href="#" className="text-slate-400 hover:text-pink-400 transition-colors">
                 <Instagram size={20} />
               </a>
-              <a href="#" className="text-slate-400 hover:text-blue-400 transition-colors">
-                <Linkedin size={20} />
-              </a>
-              <a href="#" className="text-slate-400 hover:text-purple-400 transition-colors">
-                <Github size={20} />
+              
+             <a href="#" className="text-slate-400 hover:text-pink-400 transition-colors">
+                <Facebook size={20} />
               </a>
               <a href="mailto:support@campuspulse.edu" className="text-slate-400 hover:text-emerald-400 transition-colors">
                 <Mail size={20} />
@@ -59,7 +55,7 @@ export default function Footer() {
             <ul className="space-y-3 text-slate-400">
               <li><Link href="/gallery" className="hover:text-indigo-400 transition-colors">Gallery</Link></li>
               <li><Link href="/about" className="hover:text-indigo-400 transition-colors">About Us</Link></li>
-              <li><Link href="/privacy" className="hover:text-indigo-400 transition-colors">Privacy Policy</Link></li>
+              <li><Link href="/policy" className="hover:text-indigo-400 transition-colors">Privacy Policy</Link></li>
               <li><Link href="/terms" className="hover:text-indigo-400 transition-colors">Terms of Service</Link></li>
               <li><Link href="/faq" className="hover:text-indigo-400 transition-colors">FAQ</Link></li>
               <li><Link href="/contact" className="hover:text-indigo-400 transition-colors">Contact Us</Link></li>
