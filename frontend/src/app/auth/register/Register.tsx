@@ -1093,7 +1093,7 @@ export default function Register() {
                         Creating Account...
                       </>
                     ) : (
-                      "Create Account"
+                      "OK"
                     )}
                   </Button>
                 </div>

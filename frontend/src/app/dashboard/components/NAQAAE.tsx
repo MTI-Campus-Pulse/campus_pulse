@@ -50,7 +50,7 @@ export default function NAQAAEDashboard() {
               className="group bg-white dark:bg-slate-900 p-8 rounded-3xl border-2 border-stone-200 dark:border-slate-800 shadow-lg hover:shadow-2xl hover:border-blue-500 transition-all duration-300 cursor-pointer transform hover:-translate-y-1"
             >
               <div className="flex flex-col items-center text-center">
-                <div className="w-20 h-20 bg-gradient-to-br from-blue-100 to-blue-200 dark:from-blue-900/40 dark:to-blue-800/40 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300 shadow-inner">
+                <div className="w-20 h-20 bg-linear-to-br from-blue-100 to-blue-200 dark:from-blue-900/40 dark:to-blue-800/40 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300 shadow-inner">
                   <i className="fas fa-file-alt text-4xl text-blue-600 dark:text-blue-400"></i>
                 </div>
                 <h3 className="text-2xl font-bold text-slate-800 dark:text-white mb-3">
@@ -72,7 +72,7 @@ export default function NAQAAEDashboard() {
               className="group bg-white dark:bg-slate-900 p-8 rounded-3xl border-2 border-stone-200 dark:border-slate-800 shadow-lg hover:shadow-2xl hover:border-purple-500 transition-all duration-300 cursor-pointer transform hover:-translate-y-1"
             >
               <div className="flex flex-col items-center text-center">
-                <div className="w-20 h-20 bg-gradient-to-br from-purple-100 to-purple-200 dark:from-purple-900/40 dark:to-purple-800/40 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300 shadow-inner">
+                <div className="w-20 h-20 bg-linear-to-br from-purple-100 to-purple-200 dark:from-purple-900/40 dark:to-purple-800/40 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300 shadow-inner">
                   <i className="fas fa-database text-4xl text-purple-600 dark:text-purple-400"></i>
                 </div>
                 <h3 className="text-2xl font-bold text-slate-800 dark:text-white mb-3">

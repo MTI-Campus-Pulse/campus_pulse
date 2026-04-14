@@ -593,7 +593,7 @@ export default function Login() {
         user: {
           name: 'Ahmed Mohamed',
           email: payload.email,
-          role: 'manager', // ← change this to test other roles
+          role: 'media_adviser', // ← change this to test other roles
 
         },
       }
